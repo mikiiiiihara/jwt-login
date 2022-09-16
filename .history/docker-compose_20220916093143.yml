@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  node:
+    image: node:16-bullseye
+    environment:
+      TZ: 'Asia/Tokyo'
+    ports:
+      - '3000:3000'
+    volumes:
+      - ../:/src
+    working_dir: /src
+    depends_on:
+      - mysql
+    command: /bin/sh -c "while sleep 1000; do :; done"
+
+  mysql:
+    platform: linux/x86_64
+    image: mysql:5.7
+    environment:
+      MYSQL_DATABASE: nest-db
+      MYSQL_USER: nest-user
+      MYSQL_PASSWORD: nest-pass
+      MYSQL_ROOT_PASSWORD: nest-pass
+      TZ: 'Asia/Tokyo'
+    ports:
+      - '33306:3306'
+    volumes:
+      - db-data:/var/lib/mysql
+volumes:
+  db-data:
