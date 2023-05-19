@@ -29,7 +29,7 @@ export class AuthService {
   async login(user: User): Promise<LoginResponse> {
     const tokens = await this.getTokens(user);
     // loginの戻り値にリフレッシュトークンを追加しています。また、ハッシュ化したリフレッシュトークンをUserに保存しています。
-    await this.updateHashedRefreshToken(user, tokens.refresh_token);
+    await this.updateHashedRefreshToken(user, tokens.refreshToken);
 
     return {
       // 認証を通ったUserにJWTトークンを発行
@@ -49,7 +49,7 @@ export class AuthService {
     }
 
     const tokens = await this.getTokens(user);
-    await this.updateHashedRefreshToken(user, tokens.refresh_token);
+    await this.updateHashedRefreshToken(user, tokens.refreshToken);
 
     return {
       ...tokens,
@@ -94,8 +94,8 @@ export class AuthService {
     ]);
 
     return {
-      access_token: accessToken,
-      refresh_token: refreshToken,
+      accessToken: accessToken,
+      refreshToken: refreshToken,
     };
   }
 }

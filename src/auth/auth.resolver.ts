@@ -1,4 +1,5 @@
 import { UseGuards } from '@nestjs/common';
+import { Request, Response } from 'express';
 import { Resolver, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuthService } from 'src/auth/auth.service';
 import { LoginResponse } from 'src/auth/dto/login-response';
@@ -14,9 +15,20 @@ export class AuthResolver {
   @UseGuards(GqlAuthGuard)
   async login(
     @Args('loginUserInput') loginUserInput: LoginUserInput,
-    @Context() context,
+    @Context()
+    @Context()
+    context: { req: Request; res: Response; user: any },
   ) {
-    return this.authService.login(context.user);
+    const loginResponse = await this.authService.login(context.user);
+    // Cookieにアクセストークンをセット
+    context.res.cookie('hogehoge', loginResponse.accessToken, {
+      httpOnly: true,
+      sameSite: 'none',
+      secure: false,
+      // ここに必要なオプションを追加します
+    });
+
+    return loginResponse;
   }
   @Mutation(() => LoginResponse)
   @UseGuards(JwtRefreshAuthGuard)
